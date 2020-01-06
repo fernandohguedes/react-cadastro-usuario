@@ -45,6 +45,12 @@ export default class UserCrud extends Component {
             })
     }
 
+    getUpdatedList(user, add = true) {
+        const list = this.state.list.filter(u => u.id !== user.id)
+        if (user) list.unshift(user)
+        return list
+    }
+
     updateField(event) {
         const user = { ...this.state.user };
         user[event.target.name] = event.target.value;
@@ -90,18 +96,13 @@ export default class UserCrud extends Component {
         )
     }
 
-    getUpdatedList(user, add = true) {
-        const list = this.state.list.filter(u => u.id !== user.id)
-        if (user) list.unshift(user)
-        return list
-    }
-
     load(user) {
         this.setState({ user })
     }
 
     remove(user) {
-        axios.delete(`${baseUrl}/${user.id}`).then(resp => {
+        axios.delete(`${baseUrl}/${user.id}`)
+        .then(response => {
             const list = this.getUpdatedList(user, false)
             this.setState({ list })
         })
@@ -136,7 +137,7 @@ export default class UserCrud extends Component {
                         <button className="btn btn-warning" onClick={e => this.load(user)}>
                             <i className="fa fa-pencil" />
                         </button>
-                        <button className="btn btn-danger ml-2" onClick={e => this.remove(user)}>
+                        <button className="btn btn-danger ml-2" onClick={() => this.remove(user)}>
                             <i className="fa fa-trash" />
                         </button>
                     </td>
@@ -149,8 +150,9 @@ export default class UserCrud extends Component {
         return (
             <Main {...headerProps} >
                 {this.renderForm()}
-                {this.renderTable()}
                 Cadastro de Usuários
+                {this.renderTable()}
+                
             </Main>
         )
     }
